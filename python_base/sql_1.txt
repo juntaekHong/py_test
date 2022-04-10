@@ -1,0 +1,244 @@
+Microsoft Windows [Version 10.0.22000.493]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\WINDOWS\system32>mysql
+ERROR 1045 (28000): Access denied for user 'ODBC'@'localhost' (using password: NO)
+
+C:\WINDOWS\system32>mysql -u root -p
+Enter password: ***************
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.28 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE ubion;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| ubion              |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> use ubion
+Database changed
+mysql> create table base1 (
+    -> post_id varchar(32) primary key,
+    -> password varchar(32) not null );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> drop table base1;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> show tables;
+Empty set (0.01 sec)
+
+mysql> create table base1(
+    -> post_id varchar(100) primary key
+    -> password varchar(200) not null ) ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'password varchar(200) not null )' at line 3
+mysql> create table base1(
+    -> post_id varchar(100) primary key
+    -> password varchar(200) not null );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'password varchar(200) not null )' at line 3
+mysql> create table base1(
+    -> post_id varchar(100) primary key,
+    -> password varchar(200) not null );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> INSERT INTO base1(post_id, password) values("test", "1234");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into base1 values("test2","1234");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from base1;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1234     |
+| test2   | 1234     |
++---------+----------+
+2 rows in set (0.00 sec)
+
+mysql> insert into base1 values("Test2","1234");
+ERROR 1062 (23000): Duplicate entry 'Test2' for key 'base1.PRIMARY'
+mysql> insert into base1 values("Test3","1234");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select* from base1;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1234     |
+| test2   | 1234     |
+| Test3   | 1234     |
++---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> insert into base1 values("test3","1234");
+ERROR 1062 (23000): Duplicate entry 'test3' for key 'base1.PRIMARY'
+mysql> select post_id, password from base1;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1234     |
+| test2   | 1234     |
+| Test3   | 1234     |
++---------+----------+
+3 rows in set (0.01 sec)
+
+mysql> select*from base1;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1234     |
+| test2   | 1234     |
+| Test3   | 1234     |
++---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from *
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*' at line 1
+mysql> select * from base1 where post_id ="text" ;
+Empty set (0.00 sec)
+
+mysql> select * from base1 where post_id ="text";
+Empty set (0.00 sec)
+
+mysql> select * from base1 where post_id ="test";
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1234     |
++---------+----------+
+1 row in set (0.00 sec)
+
+mysql> select * from base1 where post_id ="test2";
++---------+----------+
+| post_id | password |
++---------+----------+
+| test2   | 1234     |
++---------+----------+
+1 row in set (0.00 sec)
+
+mysql> select * from base1 where post_id ="test3";
++---------+----------+
+| post_id | password |
++---------+----------+
+| Test3   | 1234     |
++---------+----------+
+1 row in set (0.00 sec)
+
+mysql> update base1 set password ="1000" where post_id = 'test';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from  base1
+    -> ;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1000     |
+| test2   | 1234     |
+| Test3   | 1234     |
++---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> update base1 set password = "1111";
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from base1
+    -> ;
++---------+----------+
+| post_id | password |
++---------+----------+
+| test    | 1111     |
+| test2   | 1111     |
+| Test3   | 1111     |
++---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> insert into base1 values ("hohoho12", "2345");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> delete from base1 where post_id = "test" ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from base1;
++----------+----------+
+| post_id  | password |
++----------+----------+
+| hohoho12 | 2345     |
+| test2    | 1111     |
+| Test3    | 1111     |
++----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> delete from base1;
+Query OK, 3 rows affected (0.01 sec)
+
+mysql> select * from base1;
+Empty set (0.00 sec)
+
+mysql> select * from base1 where post_id="
+    "> "
+    -> ";
+    "> ";
+Empty set (0.00 sec)
+
+mysql> insert into base2(post_id, phone) values ("test5","01012345678");
+ERROR 1146 (42S02): Table 'ubion.base2' doesn't exist
+mysql> insert into base2(post_id, phone) values ("test5","01012345678");
+ERROR 1146 (42S02): Table 'ubion.base2' doesn't exist
+mysql> insert into base_2(post_id,phone) values ("test5","01012345678");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> exit
+Bye
+
+C:\WINDOWS\system32>jupyter notebook
+[I 14:19:44.383 NotebookApp] Serving notebooks from local directory: C:\WINDOWS\system32
+[I 14:19:44.383 NotebookApp] Jupyter Notebook 6.4.8 is running at:
+[I 14:19:44.385 NotebookApp] http://localhost:8888/?token=4017799c56d40a844d67c4a57a24870394bd64ee28305ab8
+[I 14:19:44.386 NotebookApp]  or http://127.0.0.1:8888/?token=4017799c56d40a844d67c4a57a24870394bd64ee28305ab8
+[I 14:19:44.387 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 14:19:44.427 NotebookApp]
+
+    To access the notebook, open this file in a browser:
+        file:///C:/Users/jangd/AppData/Roaming/jupyter/runtime/nbserver-2824-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/?token=4017799c56d40a844d67c4a57a24870394bd64ee28305ab8
+     or http://127.0.0.1:8888/?token=4017799c56d40a844d67c4a57a24870394bd64ee28305ab8
+[I 14:21:34.431 NotebookApp] Interrupted...
+[I 14:21:34.433 NotebookApp] Shutting down 0 kernels
+[I 14:21:34.434 NotebookApp] Shutting down 0 terminals
+
+C:\WINDOWS\system32>pop install pymysql
+'pop' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\WINDOWS\system32>pip install pymysql
+Collecting pymysql
+  Downloading PyMySQL-1.0.2-py3-none-any.whl (43 kB)
+     ---------------------------------------- 43.8/43.8 KB 2.2 MB/s eta 0:00:00
+Installing collected packages: pymysql
+Successfully installed pymysql-1.0.2
+
+C:\WINDOWS\system32>
